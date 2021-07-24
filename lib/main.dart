@@ -17,7 +17,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.pink,
         accentColor: Colors.red,
-        fontFamily: 'Charm',
+        errorColor: Colors.red,
+        fontFamily: 'Gelasio',
+        textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(
+                fontFamily: 'Charm',
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              button: TextStyle(color: Colors.pink),
+            ),
         appBarTheme: AppBarTheme(
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
@@ -29,7 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.green,
         ),
       ),
       home: MyHomePage(),
@@ -43,26 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _transactions = [
-    // Transaction(
-    //   id: 't1',
-    //   title: 'New Shoes',
-    //   amount: 69.99,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'New Shirt',
-    //   amount: 99.99,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't3',
-    //   title: 'New Hat',
-    //   amount: 89.99,
-    //   date: DateTime.now(),
-    // ),
-  ];
+  final List<Transaction> _transactions = [];
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((t) {
@@ -74,12 +64,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String title, double amount) {
+  void _addNewTransaction(String title, double amount, DateTime date) {
     final newTransaction = Transaction(
       id: DateTime.now().toString(),
       title: title,
       amount: amount,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -89,18 +79,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _startAddNewTransaction(BuildContext context) {
     showModalBottomSheet(
-        backgroundColor: Colors.white.withAlpha(0),
-        context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25),
-        ),
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            child: NewTransaction(_addNewTransaction),
-            behavior: HitTestBehavior.opaque,
-          );
-        });
+      backgroundColor: Colors.white.withAlpha(0),
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25),
+      ),
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
+  void _deleteTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((t) => t.id == id);
+    });
   }
 
   @override
@@ -126,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
               width: double.infinity,
               child: Chart(_recentTransactions),
             ),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _deleteTransaction),
           ],
         ),
       ),

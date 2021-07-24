@@ -13,9 +13,15 @@ class ChartBar extends StatelessWidget {
       padding: EdgeInsets.all(10),
       child: Column(
         children: [
-          FittedBox(
-            child: Text(
-              '\$${amount.toStringAsFixed(0)}',
+          SizedBox(
+            height: 20,
+            child: FittedBox(
+              child: Text(
+                '\$${amount.toStringAsFixed(0)}',
+                style: TextStyle(
+                  fontFamily: Theme.of(context).textTheme.title!.fontFamily,
+                ),
+              ),
             ),
           ),
           SizedBox(height: 5),
@@ -46,7 +52,12 @@ class ChartBar extends StatelessWidget {
             ),
           ),
           SizedBox(height: 5),
-          Text(day.toString().substring(0, 2)),
+          Text(
+            day.toString().substring(0, 2),
+            style: TextStyle(
+              fontFamily: Theme.of(context).textTheme.title!.fontFamily,
+            ),
+          ),
         ],
       ),
     );
