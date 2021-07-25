@@ -10,28 +10,43 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Container(
       height: 500,
       child: transactions.isEmpty
-          ? Column(
-              children: [
-                Text(
-                  'No transactions added yet!',
-                  style: TextStyle(
-                    fontSize: 25,
-                    color: Theme.of(context).primaryColor,
-                    fontFamily: Theme.of(context).textTheme.title!.fontFamily,
-                  ),
-                ),
-                SizedBox(height: 25),
-                Container(
-                  height: 250,
-                  child: Image.asset(
-                    'assets/images/empty.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                return Column(
+                  children: [
+                    Container(
+                      height: constraints.maxHeight * 0.2,
+                      child: Text(
+                        'No transactions added yet!',
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Theme.of(context).primaryColor,
+                          fontFamily:
+                              Theme.of(context).textTheme.title!.fontFamily,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: constraints.maxHeight * 0.1),
+                    Container(
+                      height: isLandscape
+                          ? constraints.maxHeight * 0.7
+                          : constraints.maxHeight * 0.5,
+                      width: isLandscape
+                          ? constraints.maxWidth * 0.5
+                          : constraints.maxWidth * 0.7,
+                      child: Image.asset(
+                        'assets/images/empty.png',
+                        fit: BoxFit.scaleDown,
+                      ),
+                    ),
+                  ],
+                );
+              },
             )
           : ListView.builder(
               itemCount: transactions.length,
@@ -74,12 +89,20 @@ class TransactionList extends StatelessWidget {
                             Theme.of(context).textTheme.title!.fontFamily,
                       ),
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete,
-                          color: Theme.of(context).errorColor),
-                      onPressed: () =>
-                          deleteTransaction(transactions[index].id),
-                    ),
+                    trailing: MediaQuery.of(context).size.width > 460
+                        ? FlatButton.icon(
+                            icon: Icon(Icons.delete),
+                            label: Text('Delete'),
+                            textColor: Theme.of(context).errorColor,
+                            onPressed: () =>
+                                deleteTransaction(transactions[index].id),
+                          )
+                        : IconButton(
+                            icon: Icon(Icons.delete,
+                                color: Theme.of(context).errorColor),
+                            onPressed: () =>
+                                deleteTransaction(transactions[index].id),
+                          ),
                   ),
                 );
               },
